@@ -1,0 +1,124 @@
+\documentclass[
+onecolumn,
+% hf,
+]{ceurart}
+
+\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+\sloppy
+
+\usepackage{listings}
+\usepackage{subcaption}
+\usepackage{soul}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\lstset{breaklines=true}
+
+\begin{document}
+
+\copyrightyear{2026}
+\copyrightclause{Copyright for this paper by its authors.
+  Use permitted under Creative Commons License Attribution 4.0
+  International (CC BY 4.0).}
+
+\conference{SSI, project 2025/2026}
+
+\title{A Comparative Study of Audio Feature Extraction and Machine Learning Methods for Bird Species Classification}
+
+\tnotemark[1]
+
+\author[1]{Kryspin Dziarek}[%
+email=kd315963@student.polsl.pl
+]
+\author[1]{Szymon Pająk}[%
+email=sp315960@student.polsl.pl
+]
+\author[1]{Marcin Adamski}[%
+email=ma315929@student.polsl.pl
+]
+\address[1]{Faculty of Applied Mathematics, Silesian University of Technology, Kaszubska 23, 44100 Gliwice, POLAND}
+
+\begin{abstract}
+wstep - 1 akapit, co zrobiono, jakie wyniki, minimum 180 słów
+\end{abstract}
+
+\begin{keywords}
+    Sound analysis\sep Birdsong\sep MFCC (Mel-Frequency Cepstral Coefficients)\sep Random forest\sep Neural network 
+\end{keywords}
+
+\maketitle
+
+\section{Introduction}
+Audio analysis is a process of examining and measuring sound signals to gain information, it has been a subject of research for many decades\cite{yu2016automatic}, and now, in the age of artificial intelligence, it has many more applications. Machine learning has become an essential tool in audio signal processing, enabling the development of systems capable of analyzing and classifying sounds. Such systems are widely used in applications including speech recognition\cite{zhu2025systematic}, music\cite{serrano2022new} and animal identification\cite{wood2023pairing}, often outperforming human perception of acoustic patterns\cite{spille2018comparing}.
+\\\ \\
+There are many techniques for feature extraction from sound, one of the most commonly used being Mel-Frequency Cepstral Coefficients (MFCC). This method converts the raw audio signal into a set of coefficients representing the spectral characteristics of sound\cite{abdul2022mel}. Previous studies have established standard configurations for this algorithm, such as the number of Mel filters and cepstral coefficients. However, optimal values depend on specific dataset and application, such as detection of breathing phase\cite{zhantleuova2025optimizing} or respiratory diseases\cite{yan2025optimizing}.
+\\\ \\
+In addition to sound recognition, various machine learning algorithms have been applied to audio classification tasks, each providing different levels of performance. Simpler algorithms, such as k-nearest neighbors and random forests, are faster, but often less accurate solutions, while the complex ones, like neural networks, provide higher accuracy at the cost of increased computational complexity.
+\newpage
+\noindent
+This paper presents bird species recognition with sound analysis (using MFCC) and compares different approaches for this system. The sound analysis algorithm consists of many stages, two of them are especially important, because the values they provide depend on chosen data. The number of filters used to describe the frames and number of compressed coefficients strongly affects the performance of the result. Too many features may introduce noise and redundancy, while too few may lead to information loss. The experiments conducted on a common dataset aim to identify the most effective approach for extracting the MFCC features and developing simple classification models with the best performance.
+
+
+
+
+
+
+
+
+
+
+%opis szczegółów, jak działa metodologia, wszystkie wzory
+
+%mile widziany pseudokod w Algorithm2e
+
+%Wizualizacja działania metody - tez może być
+
+\section{Methodology}
+
+This section outlines the approach used to compare different methods of audio feature extraction and the development of machine learning models for identifying bird species.
+
+\subsection{Audio Feature Extraction}
+
+Audio feature extraction enables the transformation of birdsong recordings into numerical representations, which are crucial for training machine learning models.
+
+\subsubsection{Audio Format Conversion}
+
+Audio files were converted from MP3 to FLAC format to provide a consistent and lossless compression of the signal. Although this conversion does not restore the data lost during MP3 compression, it eliminates decoding artifacts and ensures stable input for further signal processing \cite{shi2024data}.
+
+\subsubsection{Framing}
+
+Framing
+
+\subsubsection{Windowing}
+
+\subsubsection{Transformation}
+
+\subsubsection{Spectrum}
+
+\subsubsection{Mel Filterbank}
+
+\subsubsection{Mel Energies}
+
+\subsubsection{Mel-Frequency Cepstral Coefficients}
+
+\subsection{Machine Learning Algorithms}
+
+\section{Experiments}
+%Opis bazy
+
+%Opis podziału, testów itd.
+
+
+%Należy dodać wykresy, analizy i wszystko szczegółowo omówić - co widać na wykresach, %dlaczego itd.
+
+\section{Conclusion}
+
+
+%% Define the bibliography file to be used
+\bibliography{bibliography}
+
+\end{document}
+
+%%
+%% End of file

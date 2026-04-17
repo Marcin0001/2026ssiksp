@@ -1,0 +1,83 @@
+\begin{thebibliography}{9}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\href}[2]{#2}
+\providecommand{\path}[1]{#1}
+\providecommand{\DOIprefix}{doi:}
+\providecommand{\ArXivprefix}{arXiv:}
+\providecommand{\URLprefix}{URL: }
+\providecommand{\Pubmedprefix}{pmid:}
+\providecommand{\doi}[1]{\href{http://dx.doi.org/#1}{\path{#1}}}
+\providecommand{\Pubmed}[1]{\href{pmid:#1}{\path{#1}}}
+\providecommand{\bibinfo}[2]{#2}
+\ifx\xfnm\relax \def\xfnm[#1]{\unskip,\space#1}\fi
+%Type = Book
+\bibitem[{Yu and Deng(2016)}]{yu2016automatic}
+\bibinfo{author}{D.~Yu}, \bibinfo{author}{L.~Deng}, \bibinfo{title}{Automatic
+  speech recognition}, volume~\bibinfo{volume}{1},
+  \bibinfo{publisher}{Springer}, \bibinfo{year}{2016}.
+%Type = Article
+\bibitem[{Zhu and Wang(2025)}]{zhu2025systematic}
+\bibinfo{author}{M.~Zhu}, \bibinfo{author}{C.~Wang},
+\newblock \bibinfo{title}{A systematic review of research on ai in language
+  education: Current status and future implications}  (\bibinfo{year}{2025}).
+%Type = Article
+\bibitem[{Serrano et~al.(2022)Serrano, Sahbudin, Chaouch, and
+  Scarpa}]{serrano2022new}
+\bibinfo{author}{S.~Serrano}, \bibinfo{author}{M.~A.~B. Sahbudin},
+  \bibinfo{author}{C.~Chaouch}, \bibinfo{author}{M.~Scarpa},
+\newblock \bibinfo{title}{A new fingerprint definition for effective song
+  recognition},
+\newblock \bibinfo{journal}{Pattern Recognition Letters} \bibinfo{volume}{160}
+  (\bibinfo{year}{2022}).
+%Type = Article
+\bibitem[{Wood et~al.(2023)Wood, Barceinas~Cruz, and Kahl}]{wood2023pairing}
+\bibinfo{author}{C.~M. Wood}, \bibinfo{author}{A.~Barceinas~Cruz},
+  \bibinfo{author}{S.~Kahl},
+\newblock \bibinfo{title}{Pairing a user-friendly machine-learning animal sound
+  detector with passive acoustic surveys for occupancy modeling of an
+  endangered primate},
+\newblock \bibinfo{journal}{American Journal of Primatology}
+  \bibinfo{volume}{85} (\bibinfo{year}{2023}) \bibinfo{pages}{269--307}.
+%Type = Article
+\bibitem[{Spille et~al.(2018)Spille, Kollmeier, and
+  Meyer}]{spille2018comparing}
+\bibinfo{author}{C.~Spille}, \bibinfo{author}{B.~Kollmeier},
+  \bibinfo{author}{B.~T. Meyer},
+\newblock \bibinfo{title}{Comparing human and automatic speech recognition in
+  simple and complex acoustic scenes},
+\newblock \bibinfo{journal}{Computer Speech \& Language} \bibinfo{volume}{52}
+  (\bibinfo{year}{2018}).
+%Type = Article
+\bibitem[{Abdul and Al-Talabani(2022)}]{abdul2022mel}
+\bibinfo{author}{Z.~K. Abdul}, \bibinfo{author}{A.~K. Al-Talabani},
+\newblock \bibinfo{title}{Mel frequency cepstral coefficient and its
+  applications: A review},
+\newblock \bibinfo{journal}{Ieee Access} \bibinfo{volume}{10}
+  (\bibinfo{year}{2022}).
+%Type = Article
+\bibitem[{Zhantleuova et~al.(2025)Zhantleuova, Makashev, and
+  Duzbayev}]{zhantleuova2025optimizing}
+\bibinfo{author}{A.~K. Zhantleuova}, \bibinfo{author}{Y.~K. Makashev},
+  \bibinfo{author}{N.~T. Duzbayev},
+\newblock \bibinfo{title}{Optimizing mfcc parameters for breathing phase
+  detection},
+\newblock \bibinfo{journal}{Sensors} \bibinfo{volume}{25}
+  (\bibinfo{year}{2025}).
+%Type = Article
+\bibitem[{Yan et~al.(2025)Yan, Simons, van Bemmel, Reinders, Franssen, and
+  Urovi}]{yan2025optimizing}
+\bibinfo{author}{Y.~Yan}, \bibinfo{author}{S.~O. Simons},
+  \bibinfo{author}{L.~van Bemmel}, \bibinfo{author}{L.~G. Reinders},
+  \bibinfo{author}{F.~M. Franssen}, \bibinfo{author}{V.~Urovi},
+\newblock \bibinfo{title}{Optimizing mfcc parameters for the automatic
+  detection of respiratory diseases},
+\newblock \bibinfo{journal}{Applied Acoustics} \bibinfo{volume}{228}
+  (\bibinfo{year}{2025}) \bibinfo{pages}{110299}.
+%Type = Article
+\bibitem[{Shi(2024)}]{shi2024data}
+\bibinfo{author}{G.~Shi},
+\newblock \bibinfo{title}{Data compression for audio-based smart beekeeping}
+  (\bibinfo{year}{2024}) \bibinfo{pages}{50--52}.
+
+\end{thebibliography}
