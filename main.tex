@@ -13,7 +13,11 @@ onecolumn,
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{adjustbox}
+\usepackage{float}
 \lstset{breaklines=true}
+
+\SetKwProg{class}{CLASS}{}{}
+\SetKwProg{method}{METHOD}{}{}
 
 \begin{document}
 
@@ -55,8 +59,7 @@ Audio analysis is a process of examining and measuring sound signals to gain inf
 There are many techniques for feature extraction from sound, one of the most commonly used being Mel-Frequency Cepstral Coefficients (MFCC). This method converts the raw audio signal into a set of coefficients representing the spectral characteristics of sound\cite{abdul2022mel}. Previous studies have established standard configurations for this algorithm, such as the number of Mel filters and cepstral coefficients. However, optimal values depend on specific dataset and application, such as detection of breathing phase\cite{zhantleuova2025optimizing} or respiratory diseases\cite{yan2025optimizing}.
 \\\ \\
 In addition to sound recognition, various machine learning algorithms have been applied to audio classification tasks, each providing different levels of performance. Simpler algorithms, such as k-nearest neighbors and random forests, are faster, but often less accurate solutions, while the complex ones, like neural networks, provide higher accuracy at the cost of increased computational complexity.
-\newpage
-\noindent
+\\\ \\\ \\
 This paper presents bird species recognition with sound analysis (using MFCC) and compares different approaches for this system. The sound analysis algorithm consists of many stages, two of them are especially important, because the values they provide depend on chosen data. The number of filters used to describe the frames and number of compressed coefficients strongly affects the performance of the result. Too many features may introduce noise and redundancy, while too few may lead to information loss. The experiments conducted on a common dataset aim to identify the most effective approach for extracting the MFCC features and developing simple classification models with the best performance.
 
 
@@ -80,7 +83,7 @@ This section outlines the approach used to compare different methods of audio fe
 
 \subsection{Audio Feature Extraction}
 
-Audio feature extraction enables the transformation of birdsong recordings into numerical representations, which are crucial for training machine learning models.
+Audio feature extraction enables the transformation of birdsong recordings into numerical representations, which are crucial for training machine learning models. A custom library called \textit{SoundFeatures} was developed to implement the full extraction pipeline. This section describes its structure and role within the experimental setup.
 
 \subsubsection{Audio Format Conversion}
 
@@ -88,11 +91,70 @@ Audio files were converted from MP3 to FLAC format to provide a consistent and l
 
 \subsubsection{Framing}
 
-Framing
+Framing process consists of dividing the signal into smaller pieces. The resulting segments overlap to reduce the risk of cutting important parts, which could lead to data loss. The framing algorithm used in class had a default frame size set to 25ms and hop size set to 10ms. The algorithm extracts frames using a sliding window of fixed length across the entire signal. Every step has a constant value equal to hop size.
+\\
+\begin{algorithm}[H]
+  \caption{Framing method}
+  \SetAlgoLined
+  \class{SoundFeatures}{
+    \SetAlgoVlined
+    \method{frame\_signal(signal, frame\_size, hop\_size)}{
+      frames = []\;
+      \For{i in range(0, lenghtOf(signal) - frame\_size, hop\_size)}{
+        frames.append(signal[i:i\ +\ frame\_size])\;
+      }
+      \Return frames\;
+    }
+    \vdots
+  }
+\end{algorithm}
+
+\begin{figure}
+  \caption{Visual interpretation of signal framing (hop size set to 110ms and frame size set to 330ms)}
+  \includegraphics[width=\linewidth]{img/signal_framing.png}
+\end{figure}
 
 \subsubsection{Windowing}
+Windowing involves applying a function to each frame to taper its edges, which minimizes a phenomenon known as spectral leakage. This effect occurs during the Discrete Fourier Transform (DFT), where the frequency components of a frame spread across multiple frequency bins, reducing the accuracy of spectral representation. Various window functions can be used, with the Hamming and Hann windows being among the most common in audio analysis. A rectangular window can also be applied, but it does not modify the signal, resulting in no reduction of spectral leakage\cite{hamid2018frame}. The Hamming and Hann windows differ in their behaviour at the boundaries: the Hann window tapers to zero at both ends, while the Hamming window retains small non-zero values (equal to 0.08 at the boundaries), resulting in less attenuation at the edges.
+The window functions are defined as follows:
+\begin{itemize}
+  \item Hamming window
+    \[
+      w_{\text{Hamming}}[k]=0.54 - 0.46\cos{\left (\frac{2\pi k}{N-1}\right )}
+    \]
+  \item Hann window
+    \[
+      w_{\text{Hann}}[k]=0.5\cdot\Bigg(1-\cos{\left (\frac{2\pi k}{N-1}\right )\Bigg)}
+    \]
+  \item Rectangular window
+    \[
+      w_{\text{Rect}}[k]=1
+    \]
+\end{itemize}
+where:
+\begin{itemize}
+  \item $N$ - window length
+  \item $k$ - sample index
+\end{itemize}
+
+\begin{figure}[h]
+  \caption{Window charts}
+  \includegraphics[width=\linewidth]{img/window_plots.png}
+\end{figure}
 
 \subsubsection{Transformation}
+
+Audio analysis uses various mathematical transformation to convert time-domain audio into suitable representations for feature extraction (these representations are also suitable for visualization and manipulation)\cite{yustisar2020discrete,tzanetakis2001audio}. Experiments included in this paper focus on frequency domain transformation, specifically on Discrete Fourier Transform (DFT). It maps a signal frame to a set of amplitudes using the following formula:
+\[
+	A_k=\sum\limits_{p=0}^{n-1}a_ke^{-\dfrac{i2\pi kp}{n}}
+\]
+where:
+\begin{itemize}
+  \item $i$ - imaginary unit
+  \item $k$ - frame index
+  \item $n$ - sample count in frame $a$ (frame length)
+  \item $a_k$ - sample at index $k$ in frame $a$
+\end{itemize}
 
 \subsubsection{Spectrum}
 
