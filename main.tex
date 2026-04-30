@@ -19,6 +19,8 @@ onecolumn,
 \SetKwProg{class}{CLASS}{}{}
 \SetKwProg{method}{METHOD}{}{}
 
+\DontPrintSemicolon
+
 \begin{document}
 
 \copyrightyear{2026}
@@ -54,7 +56,7 @@ wstep - 1 akapit, co zrobiono, jakie wyniki, minimum 180 słów
 \maketitle
 
 \section{Introduction}
-Audio analysis is a process of examining and measuring sound signals to gain information, it has been a subject of research for many decades\cite{yu2016automatic}, and now, in the age of artificial intelligence, it has many more applications. Machine learning has become an essential tool in audio signal processing, enabling the development of systems capable of analyzing and classifying sounds. Such systems are widely used in applications including speech recognition\cite{zhu2025systematic}, music\cite{serrano2022new} and animal identification\cite{wood2023pairing}, often outperforming human perception of acoustic patterns\cite{spille2018comparing}.
+Audio analysis is a process of examining and measuring sound signals to gain information, it has been a subject of research for many decades\cite{hollabaugh1963methods}, and now, in the age of artificial intelligence, it has many more applications. Machine learning has become an essential tool in audio signal processing, enabling the development of systems capable of analyzing and classifying sounds. Such systems are widely used in applications including speech recognition\cite{zhu2025systematic}, music\cite{serrano2022new} and animal identification\cite{wood2023pairing}, often outperforming human perception of acoustic patterns\cite{spille2018comparing}.
 \\\ \\
 There are many techniques for feature extraction from sound, one of the most commonly used being Mel-Frequency Cepstral Coefficients (MFCC). This method converts the raw audio signal into a set of coefficients representing the spectral characteristics of sound\cite{abdul2022mel}. Previous studies have established standard configurations for this algorithm, such as the number of Mel filters and cepstral coefficients. However, optimal values depend on specific dataset and application, such as detection of breathing phase\cite{zhantleuova2025optimizing} or respiratory diseases\cite{yan2025optimizing}.
 \\\ \\
@@ -140,22 +142,114 @@ where:
 \begin{figure}[h]
   \caption{Window charts}
   \includegraphics[width=\linewidth]{img/window_plots.png}
+  \ \vspace{-22pt}\\
 \end{figure}
-
 \subsubsection{Transformation}
 
-Audio analysis uses various mathematical transformation to convert time-domain audio into suitable representations for feature extraction (these representations are also suitable for visualization and manipulation)\cite{yustisar2020discrete,tzanetakis2001audio}. Experiments included in this paper focus on frequency domain transformation, specifically on Discrete Fourier Transform (DFT). It maps a signal frame to a set of amplitudes using the following formula:
+Audio analysis uses various mathematical transformations to convert time-domain audio into suitable representations for feature extraction (these representations are also suitable for visualization and manipulation)\cite{yustisar2020discrete,tzanetakis2001audio}. Experiments included in this paper focus on frequency domain transformation, specifically on Discrete Fourier Transform (DFT). It maps a signal frame to a set of amplitudes using the following formula:
+\vspace{-8pt}
 \[
-	A_k=\sum\limits_{p=0}^{n-1}a_ke^{-\dfrac{i2\pi kp}{n}}
+	A_k=\sum\limits_{p=0}^{n-1}a_pe^{-\dfrac{i2\pi kp}{n}}
+  \vspace{-10pt}
 \]
+\vspace{-4pt}
 where:
+\vspace{-3pt}
 \begin{itemize}
   \item $i$ - imaginary unit
-  \item $k$ - frame index
+  \item $k$ - frequency bin index
   \item $n$ - sample count in frame $a$ (frame length)
-  \item $a_k$ - sample at index $k$ in frame $a$
+  \item $p$ - sample index in the time domain
+  \item $a_p$ - sample at index $p$ in frame $a$
 \end{itemize}
+\vspace{-4pt}
+However, the DFT's computational complexity reaches $\mathcal{O}(n^2)$, which results in high computational cost (approximately 10 hours on the examined dataset of 21374 audio files). That is why the implementation of Fast Fourier Transform (FFT) is crucial for analysing bigger datasets.
+FFT is an algorithm which consists of decomposing the DFT into smaller stages. There are lots of different FFT algorithms\cite{heckbert1995fourier,soni2011general}, the one implemented in this paper is called \textit{Radix-2 Cooley-Tukey}. This method exploits the symmetry of the DFT by separating the signal into components with even and odd indexes, then computing their transforms separately and combining the results using complex exponential coefficients known as twiddle factors\cite{coelho2024discrete}.
+\\\ \\
+Bit-reversal permutation is used to reorder the input sequence, which enables in-place computing of FFT without additional memory allocation. The algorithm combines pairs of elements at each stage using butterfly operations, which ensures constructing the final frequency-domain  representation of the signal with reduced computational complexity ($\mathcal{O}(N\log_2N)$).
+\\\ \\
+Implementation in SoundFeatures class was divided into fft\_frames method, which processes individual frames, and fft method, which computes the transform of each frame.
+\\\ \\
+\begin{algorithm}[H]
+  \caption{Fast Fourier Transform methods}
+  \SetAlgoLined
+  \class{SoundFeatures}{
+    \vdots
+    \SetAlgoVlined
+    \method{fft\_frames($frames$)} {
+      $result$ = []\;
+      $N_{samples}$ = lengthOf($frames[0]$)\;
+      $N_{fft}$ = $2^{\lceil \log_2N_{samples}\rceil}$\;
+      \For{$frame$ in $frames$} {
+        $padded\_frame$ = array of $N_{fft}$ zeros\;
+        $padded\_frame[0,N_{samples}]$ = $frame$\;
+        $result$.append(SoundFeatures.fft($padded\_frame$))\;
+      }
+      \Return{result}
+    }
+    \;
+    \method{fft($x$)} {
+      $x$ = SoundFeatures.bit\_reverse($x$)\;
+      $n$ = lengthOf($x$)\;
+      \uIf{$n$ == $1$} {
+        \Return{$x$}\;
+      }
+      \uElseIf{$n$ \% $2$ != $0$} {
+        \textbf{raise} ValueError("The number of samples in frame must be the power of $2$")\;
+      }
+      $s$ = $2$\;
+      \For{$s$ in range($1$, $log_2n+1$)} {
+        $m$ = $2^s$\;
+        $half$ = $m$ integer divided by $2$\;
+        $w_m$ = $e^{-\frac{2i\cdot\pi}{m}}$\;
+        \For{$k$ in range($0$, $n$) jumping by $m$} {
+          $w$ = $1$\;
+          \For{$i$ in range($0$, $half$)} {
+            $a$ = $w\cdot x[k + i + half]$\;
+            $b$ = $x[k + i]$\;
+            $x[k + i]$ = $b + a$\;
+            $x[k + i + half]$ = $b - a$\;
+            $w$ = $w\cdot w_m$\;
+          }
+        }
+      }
+      \Return{$x$}
+    }
+    \vdots
+  }
+\end{algorithm}
 
+\begin{algorithm}[H]
+  \caption{Bit-reversal method}
+  \SetAlgoLined
+  \class{SoundFeatures}{
+    \vdots
+    \SetAlgoVlined
+    \method{bit\_reverse($x$)} {
+      $n$ = lengthOf($x$)\;
+      $k$ = $0$\;
+
+      \For{i in range ($1$, $n$)} {
+        $bit$ = $n$ shifted bitwise right by $1$\;
+        \While{$k$ bitwise AND $bit$ != $0$} {
+          $k$ = $k$ bitwise XOR $bit$\;
+          $bit$ = $bit$ shifted bitwise right by $1$\;
+        }
+        $k$ = bitwise OR $bit$\;
+
+        \If{i < k} {
+          Swap $x[i]$ and $x[k]$\;
+        }
+      }
+      \Return{$x$}
+    }
+    \vdots
+  }
+\end{algorithm}
+\vspace{5pt}
+\noindent
+Even though the FFT algorithm was implemented, experiments included in this paper use numpy, an open-source python library to apply Fast Fourier Transform. The primary reason is improved performance, as numpy is implemented in C, which reduces the overhead associated Python loops, dynamic type checking etc.\cite{muqri2015taste}.\\
+In audio feature extraction, FFT is crucial, as it enables efficient conversion of time-domain frames into their frequency-domain representations.
 \subsubsection{Spectrum}
 
 \subsubsection{Mel Filterbank}
