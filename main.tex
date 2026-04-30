@@ -252,6 +252,37 @@ Even though the FFT algorithm was implemented, experiments included in this pape
 In audio feature extraction, FFT is crucial, as it enables efficient conversion of time-domain frames into their frequency-domain representations.
 \subsubsection{Spectrum}
 
+Spectrum describes how the energy of a signal is distributed across different frequency components. The application of Discrete Fourier Transform (DFT) produces the spectrum, which can be further transformed into other spectral forms. There are various types of spectrum:
+\begin{itemize}
+  \item Magnitude spectrum - describes the amplitude of frequency components.
+  \[
+  M_k = |A_k|
+  \]
+  \item Power spectrum - describes the energy of frequency components.
+  \[
+  P_k = |A_k|^2
+  \]
+  \item Complex spectrum - represents both amplitude and phase information. It is the direct output of DFT.
+  \[
+  C_k = A_k
+  \]
+  \item Normalized power spectrum - represents the energy of frequency components normalized by the frame length, which is useful for comparing frames of different lengths.
+  \[
+  \tilde{P}_k = \frac{|A_k|^2}{N}
+  \]
+\end{itemize}
+where:
+\begin{itemize}
+  \item $A_k$ - output of the DFT at frequency bin $k$
+  \item $k$ - frequency bin index
+  \item $N$ - frame length
+  \item $M_k$ - Magnitude spectrum
+  \item $P_k$ - Power spectrum
+  \item $C_k$ - Complex spectrum
+  \item $\tilde{P}_k$ - Normalized power spectrum
+\end{itemize}
+Birdsongs are highly structured in the frequency domain, and their relevant information is strongly related to energy distribution across frequencies, which makes the power spectrum suitable for analysis of the dataset used in the study.
+
 \subsubsection{Mel Filterbank}
 
 \subsubsection{Mel Energies}
