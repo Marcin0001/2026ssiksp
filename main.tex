@@ -200,7 +200,7 @@ Implementation in SoundFeatures class was divided into fft\_frames method, which
       $s$ = $2$\;
       \For{$s$ in range($1$, $log_2n+1$)} {
         $m$ = $2^s$\;
-        $half$ = $m$ integer divided by $2$\;
+        $half$ = $\left\lfloor\frac{m}{2}\right\rfloor$\;
         $w_m$ = $e^{-\frac{2i\cdot\pi}{m}}$\;
         \For{$k$ in range($0$, $n$) jumping by $m$} {
           $w$ = $1$\;
@@ -284,6 +284,54 @@ where:
 Birdsongs are highly structured in the frequency domain, and their relevant information is strongly related to energy distribution across frequencies, which makes the power spectrum suitable for analysis of the dataset used in the study.
 
 \subsubsection{Mel Filterbank}
+
+Mel scale is a nonlinear approximation of human auditory perception providing higher resolution at lower frequencies and lower resolution at higher frequencies. Mel filterbank is a set of triangular filters which are distributed according to the Mel scale to reflect human perception of sound. The definition of the Mel scale is given by:
+\[
+  Mel(f)=2595\log_{10}\left (1 + \frac{f}{700} \right )
+\]
+where:
+\begin{itemize}
+  \item $f$ - frequency in Hz
+  \item $Mel(f)$ - frequency in the Mel scale
+\end{itemize}
+The filterbank is constructed by creating a set of equally spaced points in Mel scale, which are then mapped back into Hz values (the linear frequency scale). As a result, the points become densely concentrated in the lower frequencies and more sparse at higher frequencies, creating triangular filters which emphasize a specific frequency range while attenuating others. The filters overlap, ensuring smooth transitions between various frequency ranges\cite{ghosh2012comparative}. The number of filters is a parameter that affects the resolution of the representation and is examined in the experimental section of this paper.
+\begin{algorithm}[H]
+  \caption{Mel filterbank method}
+  \SetAlgoLined
+  \class{SoundFeatures}{
+    \vdots
+    \SetAlgoVlined
+    \method{mel\_filterbank($n$, $sample\_rate$, $N_{filters} = 26$, $f_{min} = 0$, $f_{max} =$ None)} {
+      \If{$f_{max}$ is None} {
+        $f_{max} = \frac{sample\_rate}{2}$\;
+      }
+      $mel_{min}$ = SoundFeatures.hz\_to\_mel($f_{min}$)\;
+      $mel_{max}$ = SoundFeatures.hz\_to\_mel($f_{max}$)\;
+      $mel_points$ = array of $N_{filters}+2$ equally spaced values between $mel_{min}$ and $mel_{max}$\;
+      $hz\_points$ = SoundFeatures.mel\_to\_hz($mel\_points$)\;
+      $bin\_indices$ = $\lfloor (n + 1) \cdot \frac{hz\_points}{sample\_rate}\rfloor$\;
+      $mel\_filterbank$ = array of $N_{filters}$ arrays filled with $\lfloor \frac{n}{2}\rfloor + 1$ zeros\;
+      \For{$m$ in range($1$, $N_{filters} + 1$)} {
+        $f_m = bin\_indices[m]$\;
+        $f_m^{prev} = bin\_indices[m - 1]$\;
+        $f_m^{next} = bin\_indices[m + 1]$\;
+        \For{$k$ in range($f_m^{prev}$,$f_m$)} {
+          $mel\_filterbank[m - 1][k]$ = $\frac{k - f_m^{prev}}{f_m - f_m^{prev}}$\;
+        }
+        \For{$k$ in range($f_m$, $f_m^{next}$)} {
+          $mel\_filterbank[m - 1][k] = \frac{f_m^{next} - k}{f_m^{next} - f_m}$\;
+        }
+      }
+      \Return{mel\_filterbank}
+    }
+    \vdots
+  }
+\end{algorithm}
+\vspace{-15pt}
+\begin{figure}[h]
+  \caption{Mel filterbanks with various counts of filters}
+  \includegraphics[width=\linewidth]{img/mel_filterbank_filters.png}
+\end{figure}
 
 \subsubsection{Mel Energies}
 
